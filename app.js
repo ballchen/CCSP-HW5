@@ -94,8 +94,7 @@ app.get('/result', function(req, res){
     Please record the user vote into database.
     If the user already exists in the database, redirect her/him to '/'
   */
-  var arr = [0,0,0,0,0,0,0];
-  var allvote;
+
 
   var vote = new Vote({vote: vote, fbid: fbid});
   vote.save(function(err, newVote){
@@ -103,11 +102,14 @@ app.get('/result', function(req, res){
       req.flash('info', "你已經投過票囉！");
       return res.redirect('/');
     }
+      var arr = [0,0,0,0,0,0,0];
+    var allvote;
   
     
     Vote.find().exec(function(err,data){
       
       allvote = data.length;
+      console.log("data length"+ allvote);
       data.forEach(function(voteinfo,idx){
 
         console.log(voteinfo.vote);
@@ -122,11 +124,13 @@ app.get('/result', function(req, res){
           default:
           console.log("FUCK");
         }
-        console.log(arr);
-        res.render('result', {
-         votes: [arr[0]/allvote*100,arr[1]/allvote*100 ,arr[2]/allvote*100 ,arr[3]/allvote*100 ,arr[4]/allvote*100 ,arr[5]/allvote*100 ,arr[6]/allvote*100 ] // Percentages
-       });
+        
+        
       })
+  
+        res.render('result', {
+         votes: [arr[0]/allvote*100,arr[1]/allvote*100,arr[2]/allvote*100,arr[3]/allvote*100,arr[4]/allvote*100,arr[5]/allvote*100,arr[6]/allvote*100] // Percentages
+       });
 
     })
        
@@ -134,6 +138,7 @@ app.get('/result', function(req, res){
   });
 
 });
+
 
 http.createServer(app).listen(app.get('port'), function(){
   console.log('Express server listening on port ' + app.get('port'));
