@@ -11,7 +11,7 @@ var mongoose = require('mongoose');
 var passport = require('passport');
 
 require('./config/db'); // TODO [DB] : Connect to database
-require('./config/passport'); // TODO [FB] : Passport configuration
+//require('./config/passport'); // TODO [FB] : Passport configuration
 
 var app = express();
 var Vote = mongoose.model('Vote'); // TODO [DB] : Get Vote model
@@ -58,23 +58,23 @@ app.post('/vote', function(req, res, next){
   // Directly invoke the passport authenticate middleware.
   // Ref: http://passportjs.org/guide/authenticate/
   //
-  passport.authenticate('facebook')(req, res, next);
+  // passport.authenticate('facebook')(req, res, next);
 });
 
 // TODO [FB]: Facebook callback handler
 // Ref: https://github.com/jaredhanson/passport-facebook/blob/master/examples/login/app.js#L100
 //
-app.get('/fbcb', passport.authenticate('facebook', {
-  successRedirect:'/result',
-  failureRedirect: '/'
-}));
+// app.get('/fbcb', passport.authenticate('facebook', {
+//   successRedirect:'/result',
+//   failureRedirect: '/'
+// }));
 
 app.get('/result', function(req, res){
 
   var vote = req.session.vote, // The voted item (0~6)
-      fbid = "" + Math.random();    // Facebook ID. (Fake)
-      
-      fbid = req.user && req.user.id; // TODO [FB]: Get user from req.user
+     // fbid = "" + Math.random();    // Facebook ID. (Fake)
+      fbid = "111123";
+      // fbid = req.user && req.user.id; // TODO [FB]: Get user from req.user
 
   // Delete the stored session.
   //
@@ -103,11 +103,12 @@ app.get('/result', function(req, res){
       return res.redirect('/');
     }
   
- 
+  
     Vote.find().exec(function(err,data){
-      console.log(data);
+      data.forEach(function(voteinfo,idx){
+        console.log(voteinfo);
+      })
     })
-
        res.render('result', {
          votes: [18.1, 12.5, 42.44445, 21.3, 1.3, 2.5, 1.85555] // Percentages
        });
