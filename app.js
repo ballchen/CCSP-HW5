@@ -72,8 +72,8 @@ app.post('/vote', function(req, res, next){
 app.get('/result', function(req, res){
 
   var vote = req.session.vote, // The voted item (0~6)
-     // fbid = "" + Math.random();    // Facebook ID. (Fake)
-      fbid = "111123";
+      fbid = "" + Math.random();    // Facebook ID. (Fake)
+      //fbid = "1123";
       // fbid = req.user && req.user.id; // TODO [FB]: Get user from req.user
 
   // Delete the stored session.
@@ -94,8 +94,9 @@ app.get('/result', function(req, res){
     Please record the user vote into database.
     If the user already exists in the database, redirect her/him to '/'
   */
+  var arr = [0,0,0,0,0,0,0];
+  var allvote;
 
-  
   var vote = new Vote({vote: vote, fbid: fbid});
   vote.save(function(err, newVote){
     if( err ){
@@ -103,15 +104,32 @@ app.get('/result', function(req, res){
       return res.redirect('/');
     }
   
-  
+    
     Vote.find().exec(function(err,data){
+      
+      allvote = data.length;
       data.forEach(function(voteinfo,idx){
-        console.log(voteinfo);
-      })
-    })
-       res.render('result', {
-         votes: [18.1, 12.5, 42.44445, 21.3, 1.3, 2.5, 1.85555] // Percentages
+
+        console.log(voteinfo.vote);
+        switch(voteinfo.vote){
+          case 0: arr[0]++; break;
+          case 1: arr[1]++; break;
+          case 2: arr[2]++; break;
+          case 3: arr[3]++; break;
+          case 4: arr[4]++; break;
+          case 5: arr[5]++; break;
+          case 6: arr[6]++; break;
+          default:
+          console.log("FUCK");
+        }
+        console.log(arr);
+        res.render('result', {
+         votes: [arr[0]/allvote*100,arr[1]/allvote*100 ,arr[2]/allvote*100 ,arr[3]/allvote*100 ,arr[4]/allvote*100 ,arr[5]/allvote*100 ,arr[6]/allvote*100 ] // Percentages
        });
+      })
+
+    })
+       
   
   });
 
